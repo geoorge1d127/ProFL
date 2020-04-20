@@ -15,6 +15,7 @@ import Mutations
 import ProFL_s
 import ProFL_m
 import argparse
+import shutil
 
 parser = argparse.ArgumentParser()
 parser._action_groups.pop()
@@ -60,20 +61,23 @@ def getInitialResults(program_file, tests):
 	added_statements = ""
 	programStr = program_file.replace(".pl", "")
 	prog = os.path.basename(programStr)
+	folder = os.path.dirname(programStr)
 	test_file = open(tests)
 	for line in test_file:
 		if "test(" in line:
 			#put Each test into a test file
 			newTestFile = open("runtimeModel.plt", 'w')
-			newTestFile.write(":- begin_tests(" + prog + ").\n:- include(" + programStr + ").\n")
+			newTestFile.write(":- begin_tests(runtimeModel).\n:- include(runtimeModel).\n")
 			newTestFile.write(added_statements)
 
 			newTestFile.write(line)
 			
-			newTestFile.write("\n:- end_tests(" + prog + ").")
+			newTestFile.write("\n:- end_tests(runtimeModel).")
+
+			shutil.copyfile(program_file, "runtimeModel.pl")
 
 			#Run tests and print out results
-			command = "swipl -f " + programStr + ".pl -s runtimeModel.plt -g run_tests,halt -t 'halt(1)'"
+			command = "swipl -f runtimeModel.pl -s runtimeModel.plt -g run_tests,halt -t 'halt(1)'"
 			print(line)
 
 			#Close files
@@ -255,7 +259,7 @@ if args.coverage_path != None:
 	pf.seek(0)
 	for index, line in enumerate(pf):
 		coverage_table.add_row([line, ''.join(passed_Grid[index]), ''.join(failed_Grid[index])])
-	
+		coverage_table.add_row(["", "", ""])
 	path = ""
 	if args.coverage_path.endswith("/"):
 		path = args.coverage_path + "ProFL_Coverage_Report.html"
@@ -267,5 +271,5 @@ if args.coverage_path != None:
 
 os.remove("runtimeModel.plt")
 os.remove("mutated_file.pl")
-
+os.remove("runtimeModel.pl")
 
