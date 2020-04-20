@@ -48,33 +48,34 @@ def getResults(index, initial_test_results, test_file, coverage_info, added_stat
 		if "test(" in line:
 			if len(coverage_info) - 1 < test_number:
 				coverage_info.append([])
-			#put Each test into a test file
-			newTestFile = open("models/runtimeModel.plt", 'w')
-			newTestFile.write(":- begin_tests(mutated_file).\n:- include(mutated_file).\n")
-			newTestFile.write(added_statements)
-			newTestFile.write(line)
-			newTestFile.write("\n:- end_tests(mutated_file).")
+			if index not in coverage_info[test_number]:
+				#put Each test into a test file
+				newTestFile = open("models/runtimeModel.plt", 'w')
+				newTestFile.write(":- begin_tests(mutated_file).\n:- include(mutated_file).\n")
+				newTestFile.write(added_statements)
+				newTestFile.write(line)
+				newTestFile.write("\n:- end_tests(mutated_file).")
 
-			#Run tests and ##print out results
-			command = "swipl -f models/mutated_file.pl -s models/runtimeModel.plt -g run_tests,halt -t 'halt(1)'"
+				#Run tests and ##print out results
+				command = "swipl -f models/mutated_file.pl -s models/runtimeModel.plt -g run_tests,halt -t 'halt(1)'"
 
 
-			#Close files
-			newTestFile.close()
+				#Close files
+				newTestFile.close()
 
-			
-			#*************PASSED TEST********#####
-			try:
-				output = subprocess.check_call(command.split())
 				
-				if initial_test_results[test_number] == "fail":
-					coverage_info[test_number].append(index)
+				#*************PASSED TEST********#####
+				try:
+					output = subprocess.check_call(command.split())
+					
+					if initial_test_results[test_number] == "fail":
+						coverage_info[test_number].append(index)
 
-			##***********FAILED TEST************#####
-			except subprocess.CalledProcessError:
-				if initial_test_results[test_number] == "pass":
-					#print(test_number)
-					coverage_info[test_number].append(index)
+				##***********FAILED TEST************#####
+				except subprocess.CalledProcessError:
+					if initial_test_results[test_number] == "pass":
+						#print(test_number)
+						coverage_info[test_number].append(index)
 
 			test_number = test_number + 1
 	##print initial_test_results

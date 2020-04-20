@@ -43,7 +43,7 @@ def Create_Mutants(program):
 				AO(s[i], i, mutated_data, number_of_mutants)
 			elif statement[a] == "*":
 				AO(s[i], i, mutated_data, number_of_mutants)
-			elif statement[a] == ">":
+			elif statement[a] == ">" and p_char != '-':
 				RO(s[i], i, mutated_data, number_of_mutants)
 			elif statement[a] == "<":
 				RO(s[i], i, mutated_data, number_of_mutants)
@@ -99,9 +99,9 @@ def AO(s, index, mutated_data, number_of_mutants):
 		##print("FOUND")
 		s = s.replace("*", "-")
 	elif '+' in s:
-		s = s.replace("+", "*")
+		s = s.replace(" + ", "*")
 	elif '-' in s:
-		s = s.replace("-", "+")
+		s = s.replace(" - ", "+")
 	temp_map = (s, index)
 	mutated_data.append(temp_map)
 	number_of_mutants[index] += 1

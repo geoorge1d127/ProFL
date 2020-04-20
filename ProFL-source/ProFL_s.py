@@ -12,7 +12,8 @@ def divide(x,y):
 #Apply Tarantula equation to each statement
 def Tarantula(totalFailed, totalPassed, passed, failed):
 	#suspiciousness = float((float(passed / totalPassed) / float(float(passed / totalPassed) + float(failed / totalFailed))))
-	suspiciousness = divide(divide(passed, totalPassed), divide(passed , totalPassed) + divide(failed, totalFailed))
+	#suspiciousness = divide(divide(passed, totalPassed), divide(passed , totalPassed) + divide(failed, totalFailed))
+	suspiciousness = divide(divide(failed, totalFailed), divide(failed, totalFailed) + divide(passed, totalPassed))
 	return suspiciousness
 
 #Apply Ochiai equation to each statement
@@ -29,7 +30,7 @@ def Op2(totalFailed, totalPassed, passed, failed):
 
 
 
-def GetSuspiciousness(program, initial_test_results, coverage_info, totalFailed, totalPassed):
+def GetSuspiciousness(table, program, initial_test_results, coverage_info, totalFailed, totalPassed):
 	spnpassed_Grid = []
 	spnfailed_Grid = []
 	program_file = open("models/" + program)
@@ -42,9 +43,7 @@ def GetSuspiciousness(program, initial_test_results, coverage_info, totalFailed,
 				spnpassed_Grid[line] += 1
 			else:
 				spnfailed_Grid[line] += 1
-	table = PrettyTable()
 	program_file.seek(0)
-	table.field_names = ["Statement #", "Passed Tests", "Failed Tests", "Tarantula", "Ochiai", "OP2"]
 	for index,line in enumerate(program_file):
 		if spnfailed_Grid[index] == 0 and spnpassed_Grid[index] == 0:
 			tarantula = None

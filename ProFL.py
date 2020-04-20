@@ -1,5 +1,7 @@
 #######Dependencies#######
 
+import sys
+sys.path.insert(0, 'ProFL-source')
 import os
 import shlex, subprocess
 from prettytable import PrettyTable
@@ -12,8 +14,6 @@ import Coverage
 import Mutations
 import ProFL_s
 import ProFL_m
-import sys
-
 
 topX = sys.argv[1]
 
@@ -71,7 +71,7 @@ def getInitialResults(program_file, tests):
 	return (initial_test_results, passed_tests, failed_tests, added_statements)
 	test_file.close()
 
-Coverage = False
+GetCoverage = False
 SbFl = False
 MbFl = False
 table = PrettyTable()
@@ -96,9 +96,9 @@ mutated_data, number_of_mutants = Mutations.Create_Mutants(program_file)
 coverage_info = []
 for opt in decisions:
 	if opt.replace(" ", "") == '1':
-		Coverage = True
+		GetCoverage = True
 	elif opt.replace(" ", "") == '2':
-		Coverage = True
+		GetCoverage = True
 		SbFl = True
 	elif opt.replace(" ", "") == '3':
 		MbFl = True
@@ -107,7 +107,7 @@ table = PrettyTable()
 table.field_names = ["Statement #", "Passed Tests", "Failed Tests", "Tarantula", "Ochiai", "OP2"]
 	
 
-if Coverage == True:
+if GetCoverage == True:
 	rep = raw_input("Would you like to store a report of the coverage information? y or n \n")
 	if rep == 'y' or rep == 'Y':
 		report = True
@@ -117,7 +117,7 @@ if SbFl == True:
 
 if MbFl == True:
 	coverage_info, Mutation_Suspiciousness = ProFL_m.GetSuspiciousness(initial_test_results, mutated_data, program_file, test_file, added_statements, total_passed_tests, total_failed_tests, number_of_mutants)
-elif Coverage:
+elif GetCoverage:
 	coverage_info = Coverage.GetCoverage(initial_test_results, mutated_data, program_file, test_file, added_statements)
 
 if SbFl == True:
