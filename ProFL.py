@@ -14,8 +14,22 @@ import Coverage
 import Mutations
 import ProFL_s
 import ProFL_m
+import argparse
 
-topX = sys.argv[1]
+parser = argparse.ArgumentParser()
+parser._action_groups.pop()
+required = parser.add_argument_group('required arguments')
+optional = parser.add_argument_group('optional arguments')
+required.add_argument("-p", "--program-path", help="Pass the filename of the faulty Prolog program.", required=True)
+required.add_argument("-t", "--test-suite", help="Pass the file name of the plunit test suite.", required=True)
+required.add_argument("-f", "--fl-technique", help="Pass the faultlocalization technique to use. The value should be '-spectrum','-mutation', or '-both'.", required=True)
+required.add_argument("-v", "--view", help='Pass how much of the ranked  suspicious  list  to  view.  The  value  should  be  "-top1","-top5", "-top10", or "-all".', required=True)
+optional.add_argument("-s","--suspicious-formula", help='This argument is optional and is used when the fault localization technique is "-spectrum" or"-both". Pass the suspiciousness formula for ProFLs to use. The value should be "-tarantula", "-ochiai", or "-op2". If specifying more than one, separate with a comma, i.e. "-ochiai,-op2". If not specified, all three are used.')
+optional.add_argument("-r","--result-path", help='Pass the path to which you want to save the fault localization results. If not specified, the results are only printed to the terminal.')
+optional.add_argument("-c","--coverage-path", help= 'Pass the path to which you want to save the coverage results calculated during ProFLs. If not specified, the coverage informationis not saved.')
+args = parser.parse_args()
+
+
 
 class bcolors:
     HEADER = '\033[95m'
@@ -28,26 +42,38 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
+def get_testName(testfile, index):
+	with open(testfile) as file:
+		test_num = 0
+		for line in file:
+			if "test(" in line:
+				if test_num == index:
+					result = re.search('test(.*):', line)
+					return result.group(1)
+				test_num += 1
+
+
 def getInitialResults(program_file, tests):
 	passed_tests = 0
 	failed_tests = 0
 	initial_test_results = []
 	added_statements = ""
 	programStr = program_file.replace(".pl", "")
-	test_file = open("models/" + tests)
+	prog = os.path.basename(programStr)
+	test_file = open(tests)
 	for line in test_file:
 		if "test(" in line:
 			#put Each test into a test file
-			newTestFile = open("models/runtimeModel.plt", 'w')
-			newTestFile.write(":- begin_tests(" + programStr + ").\n:- include(" + programStr + ").\n")
+			newTestFile = open("runtimeModel.plt", 'w')
+			newTestFile.write(":- begin_tests(" + prog + ").\n:- include(" + programStr + ").\n")
 			newTestFile.write(added_statements)
 
 			newTestFile.write(line)
 			
-			newTestFile.write("\n:- end_tests(" + programStr + ").")
+			newTestFile.write("\n:- end_tests(" + prog + ").")
 
 			#Run tests and print out results
-			command = "swipl -f models/" + programStr + ".pl -s models/runtimeModel.plt -g run_tests,halt -t 'halt(1)'"
+			command = "swipl -f " + programStr + ".pl -s runtimeModel.plt -g run_tests,halt -t 'halt(1)'"
 			print(line)
 
 			#Close files
@@ -78,42 +104,48 @@ table = PrettyTable()
 table.field_names = ["Statement #", "Passed Tests", "Failed Tests", "Tarantula", "Ochiai", "OP2", "Mutation"]
 click.clear()
 print(bcolors.HEADER + bcolors.BOLD + "\n *****ProFL*****" + bcolors.ENDC)
-program_file = raw_input("\n Enter the name of your prolog model (ending with '.pl')")
-assert os.path.exists("models/" + program_file), "I did not find the file, "+str(program_file) + " in the 'models' folder"
-test_file = raw_input("\n Enter the name of the test suite file (ending with 'plt'")
-assert os.path.exists("models/" + test_file), "I did not find the file, "+str(test_file) + " in the 'models' folder"
-
+program_file = args.program_path
+assert os.path.exists(program_file), "I did not find the file, " + str(program_file)
+test_file = args.test_suite
+assert os.path.exists(test_file), "I did not find the file, "+str(test_file)
 print(bcolors.HEADER + bcolors.BOLD + "\n ****Calculating Initial Test Results**** \n" + bcolors.ENDC)
 initial_test_results, total_passed_tests, total_failed_tests, added_statements = getInitialResults(program_file, test_file)
 click.clear()
-decision = raw_input("  What would you like to do?\n(For multiple selections, separate each entry by a comma) \n 1.) Determine Coverage \n 2.) Spectrum-based Fault Localization \n 3.) Mutation-based Fault Localization \n")
 
-decisions = decision.split(",")
 report = False
 Spectrum_Formula = ""
 print(bcolors.HEADER + bcolors.BOLD + "\n ****Creating Mutants**** \n"+ bcolors.ENDC)
 mutated_data, number_of_mutants = Mutations.Create_Mutants(program_file)
 coverage_info = []
-for opt in decisions:
-	if opt.replace(" ", "") == '1':
-		GetCoverage = True
-	elif opt.replace(" ", "") == '2':
-		GetCoverage = True
-		SbFl = True
-	elif opt.replace(" ", "") == '3':
-		MbFl = True
+
+if args.fl_technique == "spectrum":
+	GetCoverage = True
+	SbFl = True
+elif args.fl_technique == "mutation":
+	MbFl = True
+elif args.fl_technique == "both":
+	GetCoverage = True
+	SbFl = True
+	MbFl = True
+
+
 
 table = PrettyTable()
 table.field_names = ["Statement #", "Passed Tests", "Failed Tests", "Tarantula", "Ochiai", "OP2"]
 	
-
+tarantula = False
+ochiai = False
+op2 = False
 if GetCoverage == True:
-	rep = raw_input("Would you like to store a report of the coverage information? y or n \n")
-	if rep == 'y' or rep == 'Y':
+	if args.coverage_path != None:
 		report = True
 if SbFl == True:
-	Spectrum_Formula = raw_input("Which Spectrum-based formula(s) would you like to use\n(For multiple selections, separate each entry by a comma)\n 1.) Tarantula \n 2.) Ochiai \n 3.) OP2 \n")
-
+	if args.suspicious_formula:
+		Spectrum_Formula = args.suspicious_formula
+	else:
+		tarantula = True
+		ochiai = True
+		op2 = True
 
 if MbFl == True:
 	coverage_info, Mutation_Suspiciousness = ProFL_m.GetSuspiciousness(initial_test_results, mutated_data, program_file, test_file, added_statements, total_passed_tests, total_failed_tests, number_of_mutants)
@@ -123,34 +155,117 @@ elif GetCoverage:
 if SbFl == True:
 	Spectrum_Suspiciousness = ProFL_s.GetSuspiciousness(table, program_file, initial_test_results, coverage_info, total_failed_tests, total_passed_tests)	
 	Spectrum_Formula = Spectrum_Formula.split(",")
+
+topX = 10
+if args.view == "top1":
+	topX = 1
+elif args.view == "top5":
+	topX = 5
+elif args.view == "top10":
+	topX = 10
+
+
+
+
+
+
 for formula in Spectrum_Formula:
-	if formula.replace(" ", "") == '1':
-		print(int(topX) + 1)
-		tarantula_table = Spectrum_Suspiciousness
-		tarantula_table.sortby = "Tarantula"
-		tarantula_table.reversesort = True
-		print(tarantula_table.get_string(start=0, end=int(topX) + 1, fields=["Statement #", "Passed Tests", "Failed Tests", "Tarantula"], title="Tarantula"))
-	elif formula.replace(" ", "") == '2':
-		ochiai_table = Spectrum_Suspiciousness
-		ochiai_table.sortby = "Ochiai"
-		ochiai_table.reversesort = True
-		print(ochiai_table.get_string(reversesort = True, sortby="Ochiai", start=0, end=int(topX) + 1, fields=["Statement #", "Passed Tests", "Failed Tests",  "Ochiai"], title="Ochiai"))
-	elif formula.replace(" ", "") == '3':
-		op2_table = Spectrum_Suspiciousness
-		print(op2_table.get_string(reversesort = True, sortby="OP2", start=0, end=int(topX) + 1, fields=["Statement #", "Passed Tests", "Failed Tests", "OP2"], title="OP2"))
+	if formula == "tarantula":
+		tarantula = True
+	elif formula == "ochiai":
+		ochiai = True
+	elif formula == "op2":
+		op2 = True
+
+results_string = ""
+
+if tarantula:
+	print(int(topX) + 1)
+	tarantula_table = Spectrum_Suspiciousness
+	tarantula_table.sortby = "Tarantula"
+	tarantula_table.reversesort = True
+	if args.view == "all":
+		print(tarantula_table.get_string(fields=["Statement #", "Passed Tests", "Failed Tests", "Tarantula"], title="Tarantula"))
+		results_string += tarantula_table.get_html_string(fields=["Statement #", "Passed Tests", "Failed Tests", "Tarantula"], title="Tarantula")
+	else:
+		print(tarantula_table.get_string(start=0, end=int(topX), fields=["Statement #", "Passed Tests", "Failed Tests", "Tarantula"], title="Tarantula"))
+		results_string += tarantula_table.get_html_string(start=0, end=int(topX), fields=["Statement #", "Passed Tests", "Failed Tests", "Tarantula"], title="Tarantula")
+
+if ochiai:
+	ochiai_table = Spectrum_Suspiciousness
+	ochiai_table.sortby = "Ochiai"
+	ochiai_table.reversesort = True
+	if args.view == "all":
+		print(ochiai_table.get_string(reversesort = True, sortby="Ochiai", fields=["Statement #", "Passed Tests", "Failed Tests",  "Ochiai"], title="Ochiai"))
+		results_string += ochiai_table.get_html_string(reversesort = True, sortby="Ochiai", fields=["Statement #", "Passed Tests", "Failed Tests",  "Ochiai"], title="Ochiai")
+	else:
+		print(ochiai_table.get_string(reversesort = True, sortby="Ochiai", start=0, end=int(topX), fields=["Statement #", "Passed Tests", "Failed Tests",  "Ochiai"], title="Ochiai"))
+		results_string += ochiai_table.get_html_string(reversesort = True, sortby="Ochiai", start=0, end=int(topX), fields=["Statement #", "Passed Tests", "Failed Tests",  "Ochiai"], title="Ochiai")
 		
+if op2:
+	op2_table = Spectrum_Suspiciousness
+	if args.view == "all":
+		print(op2_table.get_string(reversesort = True, sortby="OP2", start=0, end=int(topX), fields=["Statement #", "Passed Tests", "Failed Tests", "OP2"], title="OP2"))
+		results_string += op2_table.get_html_string(reversesort = True, sortby="OP2", start=0, end=int(topX), fields=["Statement #", "Passed Tests", "Failed Tests", "OP2"], title="OP2")
+	else:
+		print(op2_table.get_string(reversesort = True, sortby="OP2", fields=["Statement #", "Passed Tests", "Failed Tests", "OP2"], title="OP2"))
+		results_string += op2_table.get_html_string(reversesort = True, sortby="OP2", fields=["Statement #", "Passed Tests", "Failed Tests", "OP2"], title="OP2")
+
 if MbFl == True:
 	Mutation_Suspiciousness.sortby = "Mutation-Based"
 	Mutation_Suspiciousness.reversesort = True
-	print(Mutation_Suspiciousness.get_string(reversesort = True, sortby="Mutation-Based", start=0, end=int(topX) + 1, title="ProFl-m"))
-		
+	if args.view == "all":
+		print(Mutation_Suspiciousness.get_string(reversesort = True, sortby="Mutation-Based", title="ProFl-m"))
+		results_string += Mutation_Suspiciousness.get_html_string(reversesort = True, sortby="Mutation-Based", title="ProFl-m")
+	else:
+		print(Mutation_Suspiciousness.get_string(reversesort = True, sortby="Mutation-Based", start=0, end=int(topX), title="ProFl-m"))
+		results_string += Mutation_Suspiciousness.get_html_string(reversesort = True, sortby="Mutation-Based", start=0, end=int(topX), title="ProFl-m")
+			
 #selection = menu.process_user_input()
 #print(selection)
 
 
 
+if args.result_path != None:
+	path = ""
+	if args.result_path.endswith("/"):
+		path = args.result_path + "ProFL_Report.html"
+	else:
+		path = args.result_path + "/ProFL_Report.html"
+
+	with open(path, 'w') as file:
+		file.write(results_string)
 
 
+if args.coverage_path != None:
+	coverage_table = PrettyTable()
+	coverage_table.field_names = ["Statement", "Covered by passing tests", "Covered by failing tests"]
+	passed_Grid = []
+	failed_Grid = []
+	pf = open(program_file)
+	for line in pf:
+		failed_Grid.append([])
+		passed_Grid.append([])
+	for index, test in enumerate(coverage_info):
+		for line in test:
+			if initial_test_results[index] == "pass":
+				passed_Grid[line].append(get_testName(test_file, index))
+			else:
+				failed_Grid[line].append(get_testName(test_file, index))
+	pf.seek(0)
+	for index, line in enumerate(pf):
+		coverage_table.add_row([line, ''.join(passed_Grid[index]), ''.join(failed_Grid[index])])
+	
+	path = ""
+	if args.coverage_path.endswith("/"):
+		path = args.coverage_path + "ProFL_Coverage_Report.html"
+	else:
+		path = args.coverage_path + "/ProFL_Coverage_Report.html"
 
+	with open(path, 'w') as file:
+		file.write(coverage_table.get_html_string())
+
+os.remove("runtimeModel.plt")
+os.remove("mutated_file.pl")
 
 

@@ -10,20 +10,20 @@ import time
 
 
 def compile(data):
-	with open('models/mutated_file.pl', 'w') as f:
+	with open('mutated_file.pl', 'w') as f:
 	    for item in data:
 	        print >> f, item
 
 
 def GetCoverage(initial_test_results, mutated_data, program, tests, added_statements):
 	data = ""
-	with open("models/" + program, 'r') as file:
+	with open(program, 'r') as file:
 	    data = file.read().replace("", "")
 	file.close()
 	data = data.split("\n")
 	original = list(data)
 	coverage_info = []
-	test_file = open("models/" + tests)
+	test_file = open(tests)
 	for (mutant, i) in mutated_data:
 		#print mutation + "    " + str(i)
 		##print mutation + "GG"
@@ -50,14 +50,14 @@ def getResults(index, initial_test_results, test_file, coverage_info, added_stat
 				coverage_info.append([])
 			if index not in coverage_info[test_number]:
 				#put Each test into a test file
-				newTestFile = open("models/runtimeModel.plt", 'w')
+				newTestFile = open("runtimeModel.plt", 'w')
 				newTestFile.write(":- begin_tests(mutated_file).\n:- include(mutated_file).\n")
 				newTestFile.write(added_statements)
 				newTestFile.write(line)
 				newTestFile.write("\n:- end_tests(mutated_file).")
 
 				#Run tests and ##print out results
-				command = "swipl -f models/mutated_file.pl -s models/runtimeModel.plt -g run_tests,halt -t 'halt(1)'"
+				command = "swipl -f mutated_file.pl -s runtimeModel.plt -g run_tests,halt -t 'halt(1)'"
 
 
 				#Close files

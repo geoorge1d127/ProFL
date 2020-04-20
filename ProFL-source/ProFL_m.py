@@ -10,7 +10,7 @@ import time
 
 
 def compile(data):
-	with open('models/mutated_file.pl', 'w') as f:
+	with open('mutated_file.pl', 'w') as f:
 	    for item in data:
 	        print >> f, item
 
@@ -19,7 +19,7 @@ def GetSuspiciousness(initial_test_results, mutated_data, program, tests, added_
 	total_pass_to_fail = 0
 	total_fail_to_pass = 0
 	data = ""
-	with open("models/" + program, 'r') as file:
+	with open(program, 'r') as file:
 	    data = file.read().replace("", "")
 	file.close()
 	data = data.split("\n")
@@ -30,7 +30,7 @@ def GetSuspiciousness(initial_test_results, mutated_data, program, tests, added_
 	pass_to_fail = [0] * len(data)
 	original = list(data)
 	coverage_info = []
-	test_file = open("models/" + tests)
+	test_file = open(tests)
 	for (mutant, i) in mutated_data:
 		#print mutation + "    " + str(i)
 		##print mutation + "GG"
@@ -69,8 +69,10 @@ def GetSuspiciousness(initial_test_results, mutated_data, program, tests, added_
 				Ms += float(divide(1.0, float(number_of_mutants[index])) * ((divide(float(fail_to_pass[index]), float(failed_tests)) - weight) * (divide(float(pass_to_fail[index]), float(passed_tests)))))
 				indexes_covered.append(index)
 		previous_index = index
-	table.add_row([index + 1, spnpassed_Grid[index], spnfailed_Grid[index], Ms])
+	#table.add_row([index + 1, spnpassed_Grid[index], spnfailed_Grid[index], Ms])
 			#print(float((divide(float(fail_to_pass[index]), float(failed_tests)) - weight) * (divide(float(pass_to_fail[index]), float(passed_tests)))))
+	
+
 	return coverage_info, table
 
 
@@ -89,40 +91,42 @@ def getResults(index, initial_test_results, test_file, coverage_info, added_stat
 				coverage_info.append([])
 			#put Each test into a test file
 			
-			if index not in coverage_info[test_number]:
-				newTestFile = open("models/runtimeModel.plt", 'w')
-				newTestFile.write(":- begin_tests(mutated_file).\n:- include(mutated_file).\n")
-				newTestFile.write(added_statements)
-				newTestFile.write(line)
-				newTestFile.write("\n:- end_tests(mutated_file).")
+			newTestFile = open("runtimeModel.plt", 'w')
+			newTestFile.write(":- begin_tests(mutated_file).\n:- include(mutated_file).\n")
+			newTestFile.write(added_statements)
+			newTestFile.write(line)
+			newTestFile.write("\n:- end_tests(mutated_file).")
 
-				#Run tests and ##print out results
-				command = "swipl -f models/mutated_file.pl -s models/runtimeModel.plt -g run_tests,halt -t 'halt(1)'"
+			#Run tests and ##print out results
+			command = "swipl -f mutated_file.pl -s runtimeModel.plt -g run_tests,halt -t 'halt(1)'"
 
 
-				#Close files
-				newTestFile.close()
+			#Close files
+			newTestFile.close()
 
+			
+			#*************PASSED TEST********#####
+			try:
+				output = subprocess.check_call(command.split())
 				
-				#*************PASSED TEST********#####
-				try:
-					output = subprocess.check_call(command.split())
-					
-					if initial_test_results[test_number] == "fail":
+				if initial_test_results[test_number] == "fail":
+
+					if index not in coverage_info[test_number]:
 						coverage_info[test_number].append(index)
-						fail_to_pass[index] += 1
-						total_fail_to_pass += 1
 						spnfailed_Grid[index] += 1
+					fail_to_pass[index] += 1
+					total_fail_to_pass += 1
 
 
-				##***********FAILED TEST************#####
-				except subprocess.CalledProcessError:
-					if initial_test_results[test_number] == "pass":
-						#print(test_number)
+			##***********FAILED TEST************#####
+			except subprocess.CalledProcessError:
+				if initial_test_results[test_number] == "pass":
+					#print(test_number)
+					if index not in coverage_info[test_number]:
 						coverage_info[test_number].append(index)
-						pass_to_fail[index] += 1
-						total_pass_to_fail += 1
 						spnpassed_Grid[index] += 1
+					pass_to_fail[index] += 1
+					total_pass_to_fail += 1
 
 			test_number = test_number + 1
 	##print initial_test_results

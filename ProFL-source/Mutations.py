@@ -3,7 +3,7 @@ def replace_str_index(text,index=0,replacement=''):
 
 def Create_Mutants(program):
 	data = ""
-	with open("models/" + program, 'r') as file:
+	with open(program, 'r') as file:
 	    data = file.read().replace("", "")
 	mutated_data = []
 	data = data.split("\n")

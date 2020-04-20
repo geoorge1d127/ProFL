@@ -33,7 +33,7 @@ def Op2(totalFailed, totalPassed, passed, failed):
 def GetSuspiciousness(table, program, initial_test_results, coverage_info, totalFailed, totalPassed):
 	spnpassed_Grid = []
 	spnfailed_Grid = []
-	program_file = open("models/" + program)
+	program_file = open(program)
 	for line in program_file:
 		spnfailed_Grid.append(0)
 		spnpassed_Grid.append(0)
