@@ -1,6 +1,11 @@
 # ProFL: A Fault Localization Tool for Prolog
 
+
 ProFL is a fault localization command-line tool for Prolog models. Given a faulty Prolog model and a corresponding test suite, ProFL will calculate which Prolog statements are the most likely to be faulty or have the highest "suspiciousness". ProFL has three components: A tool that determines test coverage for the given test suite on the Prolog model, ProFL-s which is a spectrum-based fault localization technique and ProFL-m which is a mutation-based fault localization technique.
+
+
+# Motivation
+In the field of software testing, there seems to be useful tools and techniques when it comes to localizing faults in imperative languages (Java and C++). However, there seems to be a lack of reseach as to how these techniques might be useful for declarative languages, like Prolog. Since Prolog is still widely used, this project aims to address the need to enable fault localization in Prolog models.
 
 
 # Requirements:
@@ -27,9 +32,9 @@ To run `ProFL`, use `git` to clone the repository.
 git clone https://github.com/geoorge1d127/ProFL.git
 ```
 
-# Quick Start:
+# Getting Started:
 
-##Calculate Suspiciousness
+## Calculate Suspiciousness
 
 To calculate the suspiciousness of a faulty Prolog model, run
 ```Shell
@@ -57,5 +62,6 @@ python ProFL.py --program-path <arg> --test-suite <arg> --fl-technique <arg> --v
 
 * `-c,--coverage-path`: This argument is optional. Pass the path to which you want to save the coverage results calculated during ProFL. If not specified, the coverage information is not saved.
 
+For each run, the command reports up to four tables (depending on which technique and suspiciousness formulas you choose) ranking potentially faulty statements by their suspiciousness score. The tables will show either: The most suspicious statement, the top 5 most suspicious statement, the top 10 most suspicious statement, or all of the statements in order of most suspicious to least suspicious. You also have the option of printing out the results as an html webpage.
 
 # Components
