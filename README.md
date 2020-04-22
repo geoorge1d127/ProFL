@@ -43,19 +43,19 @@ python ProFL.py --program-path <arg> --test-suite <arg> --fl-technique <arg> --v
 
 
 
-*`-p,--program-path`: This argument isrequired. Pass the filename of the faulty Prolog program.
+* `-p,--program-path`: This argument isrequired. Pass the filename of the faulty Prolog program.
 
-*`-t,--test-suite`: This argument isrequired. Pass the file nameof the plunit test suite.
+* `-t,--test-suite`: This argument is required. Pass the file name of the plunit test suite.
 
-*`-f,--fl-technique`: This argument isrequired. Pass the faultlocalization technique to use. The value should be `-spectrum`,`-mutation`, or `-both`.
+* `-f,--fl-technique`: This argument is required. Pass the fault localization technique to use. The value should be `-spectrum`,`-mutation`, or `-both`.
 
-*`-v,--view`: This argument isrequired. Pass how much of theranked  suspicious  list  to  view.  The  value  should  be  `-top1`,`-top5`, `-top10`, or `-all`.
+* `-v,--view`: This argument is required. Pass how much of the ranked  suspicious  list  to  view.  The  value  should  be  `-top1`,`-top5`, `-top10`, or `-all`.
 
-*`-s,--suspicious-formula`: This argument isoptionaland isused when the fault localization technique is `-spectrum` or`-both`. Pass the suspiciousness formula for ProFLsto use. Thevalue should be `-trantula`, `-ochiai`, or `-op2`.If specifyingmore than one, separate with a comma, i.e. `-ochiai,-op2`. Ifnot specified, all three are used.
+* `-s,--suspicious-formula`: This argument is optional and is used when the fault localization technique is `-spectrum` or`-both`. Pass the suspiciousness formula for ProFLs to use. The value should be `-tarantula`, `-ochiai`, or `-op2`.If specifying more than one, separate with a comma, i.e. `-ochiai, -op2`. If not specified, all three are used.
 
-*`-r,--result-path`: This argument isoptional. Pass the pathto which you want to save the fault localization results. If notspecified, the results are only printed to the terminal.
+* `-r,--result-path`: This argument is optional. Pass the path to which you want to save the fault localization results. If not specified, the results are only printed to the terminal.
 
-*`-c,--coverage-path`: This argument isoptional. Pass the pathto which you want to save the coverage results calculated duringProFL. If not specified, the coverage information is not saved.
+* `-c,--coverage-path`: This argument is optional. Pass the path to which you want to save the coverage results calculated during ProFL. If not specified, the coverage information is not saved.
 
 
 # Components
