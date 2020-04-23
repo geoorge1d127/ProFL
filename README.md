@@ -1,11 +1,11 @@
 # ProFL: A Fault Localization Tool for Prolog
 
 
-ProFL is a fault localization command-line tool for Prolog models. Given a faulty Prolog model and a corresponding test suite, ProFL will calculate which Prolog statements are the most likely to be faulty or have the highest "suspiciousness". ProFL has three components: A tool that determines test coverage for the given test suite on the Prolog model, ProFL-s which is a spectrum-based fault localization technique and ProFL-m which is a mutation-based fault localization technique.
+ProFL is a command-line fault localization tool for Prolog models. Given a faulty Prolog model and a corresponding test suite, ProFL will calculate which Prolog statements are the most likely to be faulty or have the highest "suspiciousness". ProFL has three components: A tool that determines test coverage for the given test suite on the Prolog model, ProFL-s which is a spectrum-based fault localization technique and ProFL-m which is a mutation-based fault localization technique.
 
 
 # Motivation
-In the field of software testing, there seems to be useful tools and techniques when it comes to localizing faults in imperative languages (Java and C++). However, there seems to be a lack of reseach as to how these techniques might be useful for declarative languages, like Prolog. Since Prolog is still widely used, this project aims to address the need to enable fault localization in Prolog models.
+In the field of software testing, there seems to be useful tools and techniques when it comes to localizing faults in imperative languages (Java and C++). However, there seems to be a lack of research as to how these techniques might be useful for declarative languages, like Prolog. Since Prolog is still widely used, this project aims to address the need to enable afault localization in Prolog models.
 
 
 # Requirements:
@@ -19,10 +19,28 @@ In the field of software testing, there seems to be useful tools and techniques 
 * Dependencies
   - Python(2.7 or Above): Must be installed and accessible from `PATH`.
   - Python library PrettyTable: Must be installed using pip.
+  - Python libray Click: Must be installed using pip
   - Swipl(Swi-Prolog command line tool): Must be installed and accessible from `PATH`
 
 
 # Installation
+
+[Python](https://www.python.org/downloads/) - Install python 2.7 or Above
+
+[Swi-Prolog](https://www.swi-prolog.org/download/stable) - Install Stable Version
+
+[PrettyTable](https://pypi.org/project/PrettyTable/)
+To install PrettyTable using pip, Open a terminal and run:
+```Shell
+pip install PrettyTable
+```
+[Click](https://pypi.org/project/click/)
+To install CLick Using pip, Open a terminal and run:
+```Shell
+pip install click
+```
+
+# Getting Started:
 
 ## Clone ProFL repo
 
@@ -31,8 +49,6 @@ To run `ProFL`, use `git` to clone the repository.
 ```Shell
 git clone https://github.com/geoorge1d127/ProFL.git
 ```
-
-# Getting Started:
 
 ## Calculate Suspiciousness
 

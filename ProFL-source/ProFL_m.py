@@ -12,7 +12,7 @@ import time
 def compile(data):
 	with open('mutated_file.pl', 'w') as f:
 	    for item in data:
-	        print >> f, item
+	        print(item, file=f)
 
 
 def GetSuspiciousness(initial_test_results, mutated_data, program, tests, added_statements, total_passed, total_failed, number_of_mutants):

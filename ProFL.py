@@ -10,12 +10,13 @@ import re
 #import mutations
 import time
 import click
+import argparse
+import shutil
 import Coverage
 import Mutations
 import ProFL_s
 import ProFL_m
-import argparse
-import shutil
+
 
 parser = argparse.ArgumentParser()
 parser._action_groups.pop()
@@ -29,7 +30,6 @@ optional.add_argument("-s","--suspicious-formula", help='This argument is option
 optional.add_argument("-r","--result-path", help='Pass the path to which you want to save the fault localization results. If not specified, the results are only printed to the terminal.')
 optional.add_argument("-c","--coverage-path", help= 'Pass the path to which you want to save the coverage results calculated during ProFLs. If not specified, the coverage informationis not saved.')
 args = parser.parse_args()
-
 
 
 class bcolors:
