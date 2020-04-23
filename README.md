@@ -32,13 +32,11 @@ In the field of software testing, there seems to be useful tools and techniques 
 [Swi-Prolog](https://www.swi-prolog.org/download/stable) - Install Stable Version
 
 ## Install Python Depencies
-[PrettyTable](https://pypi.org/project/PrettyTable/)
-To install PrettyTable using pip, Open a terminal and run:
+[PrettyTable](https://pypi.org/project/PrettyTable/) - To install PrettyTable using pip, Open a terminal and run:
 ```Shell
 pip install PrettyTable
 ```
-[Click](https://pypi.org/project/click/)
-To install CLick Using pip, Open a terminal and run:
+[Click](https://pypi.org/project/click/) - To install CLick Using pip, Open a terminal and run:
 ```Shell
 pip install click
 ```
@@ -67,7 +65,7 @@ python ProFL.py --program-path <arg> --test-suite <arg> --fl-technique <arg> --v
 
 
 
-* `-p,--program-path`: This argument isrequired. Pass the filename of the faulty Prolog program.
+* `-p,--program-path`: This argument is required. Pass the filename of the faulty Prolog program.
 
 * `-t,--test-suite`: This argument is required. Pass the file name of the plunit test suite.
 
@@ -83,4 +81,21 @@ python ProFL.py --program-path <arg> --test-suite <arg> --fl-technique <arg> --v
 
 For each run, the command reports up to four tables (depending on which technique and suspiciousness formulas you choose) ranking potentially faulty statements by their suspiciousness score. The tables will show either: The most suspicious statement, the top 5 most suspicious statement, the top 10 most suspicious statement, or all of the statements in order of most suspicious to least suspicious. You also have the option of printing out the results as an html webpage.
 
-# Components
+## Included Models
+
+We provide 9 Prolog models from [exercism](https://github.com/exercism/prolog/tree/master/exercises). For Each unique model there is a corresponding test suite that tests the functionality of that model. The `Examples/Programs directory` contains all 9 Prolog Models. The `Examples/Test_Suites` directory contains all 9 corresponding test suites. The example models are listed below.
+
+* `anagram` determines which words are anagrams of a given word.
+* `complex_num` implements complex numbers.
+* `dominoes` makes a chain of dominoes.
+* `grains` calculates the number of grains of wheat on a chessboard when the number on each square doubles.
+* `hamming` calculates the Hamming difference between two DNA strands.
+* `pascal_triangle` computes Pascal’s triangle.
+* `queen_attack` determines if two queens can attack each other on a chess board.
+* `space_age` calculates how old someone is in terms of aplanet’s solar years.
+* `triangle` determines the type of a triangle.
+
+
+#Authors
+* **George Thompson** - *Initial work* - [Geoorge1d127](https://github.com/geoorge1d127)
+* **Allison Sullivan** - *Initial work* - [Allisonius](https://github.com/Allisonius/)
