@@ -100,5 +100,5 @@ We provide 9 Prolog models from [exercism](https://github.com/exercism/prolog/tr
 * **George Thompson** - *Initial work* - [Geoorge1d127](https://github.com/geoorge1d127)
 * **Allison Sullivan** - *Initial work* - [Allisonius](https://github.com/Allisonius/)
 
-# Credits
-[AlloyFL](https://github.com/kaiyuanw/ARepair)
+# License
+MIT License, see `LICENSE` for more information.
