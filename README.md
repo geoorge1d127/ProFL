@@ -25,10 +25,13 @@ In the field of software testing, there seems to be useful tools and techniques 
 
 # Installation
 
+## Install Python
 [Python](https://www.python.org/downloads/) - Install python 2.7 or Above
 
+## Install Swi-Prolog
 [Swi-Prolog](https://www.swi-prolog.org/download/stable) - Install Stable Version
 
+## Install Python Depencies
 [PrettyTable](https://pypi.org/project/PrettyTable/)
 To install PrettyTable using pip, Open a terminal and run:
 ```Shell
