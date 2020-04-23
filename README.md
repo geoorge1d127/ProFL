@@ -36,7 +36,7 @@ In the field of software testing, there seems to be useful tools and techniques 
 ```Shell
 pip install PrettyTable
 ```
-[Click](https://pypi.org/project/click/) - To install CLick Using pip, Open a terminal and run:
+[Click](https://pypi.org/project/click/) - To install Click Using pip, Open a terminal and run:
 ```Shell
 pip install click
 ```
@@ -83,7 +83,7 @@ For each run, the command reports up to four tables (depending on which techniqu
 
 ## Included Models
 
-We provide 9 Prolog models from [exercism](https://github.com/exercism/prolog/tree/master/exercises). For Each unique model there is a corresponding test suite that tests the functionality of that model. The `Examples/Programs directory` contains all 9 Prolog Models. The `Examples/Test_Suites` directory contains all 9 corresponding test suites. The example models are listed below.
+We provide 9 Prolog models from [exercism](https://github.com/exercism/prolog/tree/master/exercises). For Each unique model, there is a corresponding test suite that tests the functionality of that model. The `Examples/Programs directory` contains all 9 Prolog Models. The `Examples/Test_Suites` directory contains all 9 corresponding test suites. The example models are listed below.
 
 * `anagram` determines which words are anagrams of a given word.
 * `complex_num` implements complex numbers.
@@ -96,6 +96,9 @@ We provide 9 Prolog models from [exercism](https://github.com/exercism/prolog/tr
 * `triangle` determines the type of a triangle.
 
 
-#Authors
+# Authors
 * **George Thompson** - *Initial work* - [Geoorge1d127](https://github.com/geoorge1d127)
 * **Allison Sullivan** - *Initial work* - [Allisonius](https://github.com/Allisonius/)
+
+# Credits
+[AlloyFL](https://github.com/kaiyuanw/ARepair)
